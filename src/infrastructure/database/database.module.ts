@@ -12,7 +12,6 @@ import { User } from '../../domain/entities/user.entity';
         url: configService.get('URL_DB'),
         entities: [User],
         synchronize: true,
-        logging: true,
       }),
       inject: [ConfigService],
     }),

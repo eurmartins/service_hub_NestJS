@@ -11,7 +11,7 @@ import { UserService } from '../../application/services/user/user.service';
 import { CreateUserDto } from '../../application/dtos/user/create-user.dto';
 import { UpdateUserDto } from '../../application/dtos/user/update-user.dto';
 
-@Controller('users')
+@Controller('/api/v1/users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

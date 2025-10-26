@@ -12,24 +12,24 @@ export class AppLoggerService {
     this.logger = new Logger(context);
   }
 
-  private format(level: string, message: string): string {
+  private date_request(level: string, message: string): string {
     const timestamp = new Date().toISOString();
     return `[${timestamp}] [${level}] ${message}`;
   }
 
   info(message: string) {
-    this.logger.log(this.format('INFO', message));
+    this.logger.log(this.date_request('INFO', message));
   }
 
   error(message: string, trace?: string) {
-    this.logger.error(this.format('ERROR', message), trace);
+    this.logger.error(this.date_request('ERROR', message), trace);
   }
 
   warn(message: string) {
-    this.logger.warn(this.format('WARN', message));
+    this.logger.warn(this.date_request('WARN', message));
   }
 
   debug(message: string) {
-    this.logger.debug(this.format('DEBUG', message));
+    this.logger.debug(this.date_request('DEBUG', message));
   }
 }

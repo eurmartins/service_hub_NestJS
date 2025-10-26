@@ -6,6 +6,8 @@ import { CreateUserDto } from '../../dtos/user/create-user.dto';
 import { UpdateUserDto } from '../../dtos/user/update-user.dto';
 import { HashService } from './hash.service';
 import { AppLoggerService } from '../logger/logger.service';
+import { Email } from '../../../domain/values-objects/email.values-objects';
+import { HashPassword } from '../../../domain/values-objects/hashpassword.values-objects';
 
 @Injectable()
 export class UserService {
@@ -23,8 +25,12 @@ export class UserService {
       this.logger.info(`Creating user with email: ${createUserDto.email}`);
 
       const user = new User();
-      Object.assign(user, createUserDto);
-      user.hashSenha = await this.hashService.hash(createUserDto.hashSenha);
+      user.email = new Email(createUserDto.email);
+      const hashed = await this.hashService.hash(createUserDto.hashSenha);
+      user.hashPassword = new HashPassword(hashed);
+
+      user.ativo = true;
+
       const savedUser = await this.userRepository.save(user);
 
       this.logger.info(`User created with ID: ${savedUser.id}`);
@@ -60,7 +66,7 @@ export class UserService {
       const user = await this.userRepository.findOneBy({ id });
 
       if (user) {
-        this.logger.info(`User found: ${user.email}`);
+        this.logger.info(`User found: ${user.email.toString()}`);
       } else {
         this.logger.error(`User with ID ${id} not found`);
       }
@@ -80,10 +86,18 @@ export class UserService {
 
       if (!user_existing) return null;
 
-      Object.assign(user_existing, updateUserDto);
+      if (updateUserDto.email) {
+        user_existing.email = new Email(updateUserDto.email);
+      }
+
+      if (updateUserDto.hashSenha) {
+        const hashed = await this.hashService.hash(updateUserDto.hashSenha);
+        user_existing.hashPassword = new HashPassword(hashed);
+      }
+
       const updatedUser = await this.userRepository.save(user_existing);
 
-      this.logger.info(`User updated: ${updatedUser.email}`);
+      this.logger.info(`User updated: ${updatedUser.email.toString()}`);
 
       return updatedUser;
     } catch (error) {

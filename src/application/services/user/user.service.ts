@@ -29,8 +29,6 @@ export class UserService {
       const hashed = await this.hashService.hash(createUserDto.hashSenha);
       user.hashPassword = new HashPassword(hashed);
 
-      user.ativo = true;
-
       const savedUser = await this.userRepository.save(user);
 
       this.logger.info(`User created with ID: ${savedUser.id}`);

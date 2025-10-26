@@ -1,4 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Email } from '../values-objects/email.values-objects';
+import { HashPassword } from '../values-objects/hashpassword.values-objects';
 
 @Entity()
 export class User {
@@ -6,11 +8,27 @@ export class User {
   id: string;
 
   @Column({ unique: true })
-  email: string;
+  private _email: string;
 
   @Column()
-  hashSenha: string;
+  private _hashPassword: string;
 
   @Column({ default: true })
   ativo: boolean;
+
+  get email(): Email {
+    return new Email(this._email);
+  }
+
+  set email(email: Email) {
+    this._email = email.toString();
+  }
+
+  get hashPassword(): HashPassword {
+    return new HashPassword(this._hashPassword);
+  }
+
+  set hashPassword(hashPassword: HashPassword) {
+    this._hashPassword = hashPassword.toString();
+  }
 }

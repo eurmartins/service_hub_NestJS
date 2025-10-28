@@ -2,13 +2,19 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
+import { ClientModule } from './infrastructure/modules/client.module';
 import { UserModule } from './infrastructure/modules/user.module';
 import { DatabaseModule } from './infrastructure/database/database.module';
 import { LoggerModule } from './infrastructure/modules/global/logger.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DatabaseModule, UserModule, LoggerModule],
+  imports: [
+    ConfigModule.forRoot(),
+    DatabaseModule,
+    UserModule,
+    LoggerModule,
+    ClientModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

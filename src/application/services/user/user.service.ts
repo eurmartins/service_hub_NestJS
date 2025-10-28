@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from '../../../domain/entities/user.entity';
 import { CreateUserDto } from '../../dtos/user/create-user.dto';
 import { UpdateUserDto } from '../../dtos/user/update-user.dto';
+import { ReadUserDto } from '../../dtos/user/read-user.dto';
 import { HashService } from './hash.service';
 import { AppLoggerService } from '../logger/logger.service';
 import { Email } from '../../../domain/values-objects/email.values-objects';
@@ -42,7 +43,7 @@ export class UserService {
     }
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<ReadUserDto[]> {
     try {
       this.logger.info('Fetching all users');
 
@@ -50,14 +51,18 @@ export class UserService {
 
       this.logger.info(`Found ${users.length} users`);
 
-      return users;
+      return users.map((user) => ({
+        id: user.id,
+        email: user.email.toString(),
+        ativo: user.ativo,
+      }));
     } catch (error) {
       this.logger.error(`Error to fetch all users. Error details: ${error}`);
       throw error;
     }
   }
 
-  async findOne(id: string): Promise<User | null> {
+  async findOne(id: string): Promise<ReadUserDto | null> {
     try {
       this.logger.info(`Fetching user with ID: ${id}`);
 
@@ -65,11 +70,15 @@ export class UserService {
 
       if (user) {
         this.logger.info(`User found: ${user.email.toString()}`);
+        return {
+          id: user.id,
+          email: user.email.toString(),
+          ativo: user.ativo,
+        };
       } else {
         this.logger.error(`User with ID ${id} not found`);
+        return null;
       }
-
-      return user;
     } catch (error) {
       this.logger.error(`Error fetching user with ID ${id}. Error: ${error}`);
       throw error;
@@ -80,20 +89,20 @@ export class UserService {
     try {
       this.logger.info(`Updating user with ID: ${id}`);
 
-      const user_existing = await this.findOne(id);
+      const user = await this.userRepository.findOneBy({ id });
 
-      if (!user_existing) return null;
+      if (!user) return null;
 
       if (updateUserDto.email) {
-        user_existing.email = new Email(updateUserDto.email);
+        user.email = new Email(updateUserDto.email);
       }
 
       if (updateUserDto.hashSenha) {
         const hashed = await this.hashService.hash(updateUserDto.hashSenha);
-        user_existing.hashPassword = new HashPassword(hashed);
+        user.hashPassword = new HashPassword(hashed);
       }
 
-      const updatedUser = await this.userRepository.save(user_existing);
+      const updatedUser = await this.userRepository.save(user);
 
       this.logger.info(`User updated: ${updatedUser.email.toString()}`);
 

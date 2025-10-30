@@ -7,8 +7,8 @@ import { UpdateUserDto } from '../../dtos/user/update-user.dto';
 import { ReadUserDto } from '../../dtos/user/read-user.dto';
 import { HashService } from './hash.service';
 import { AppLoggerService } from '../logger/logger.service';
-import { Email } from '../../../domain/values-objects/email.values-objects';
-import { HashPassword } from '../../../domain/values-objects/hashpassword.values-objects';
+import { Email } from '../../../domain/values-objects/user.values-objects/email.values-objects';
+import { HashPassword } from '../../../domain/values-objects/user.values-objects/hashpassword.values-objects';
 
 @Injectable()
 export class UserService {

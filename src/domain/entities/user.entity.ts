@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { Email } from '../values-objects/email.values-objects';
-import { HashPassword } from '../values-objects/hashpassword.values-objects';
+import { Email } from '../values-objects/user.values-objects/email.values-objects';
+import { HashPassword } from '../values-objects/user.values-objects/hashpassword.values-objects';
 
 @Entity()
 export class User {

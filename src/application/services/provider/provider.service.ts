@@ -1,21 +1,22 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Injectable, BadRequestException, Inject } from '@nestjs/common';
 import { Provider } from '../../../domain/entities/provider.entity';
-import { User } from '../../../domain/entities/user.entity';
 import { CreateProviderDto } from '../../dtos/provider/create-provider.dto';
 import { UpdateProviderDto } from '../../dtos/provider/update-provider.dto';
 import { ReadProviderDto } from '../../dtos/provider/read-provider.dto';
 import { AppLoggerService } from '../logger/logger.service';
 import { ProfDescription } from '../../../domain/values-objects/provider.values-objects/profdescription.values-objects';
+import type { ProviderRepository } from '../../../domain/repositories/provider.repository';
+import { PROVIDER_REPOSITORY } from '../../../domain/repositories/provider.repository';
+import type { UserRepository } from '../../../domain/repositories/user.repository';
+import { USER_REPOSITORY } from '../../../domain/repositories/user.repository';
 
 @Injectable()
 export class ProviderService {
   constructor(
-    @InjectRepository(Provider)
-    private readonly providerRepository: Repository<Provider>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @Inject(PROVIDER_REPOSITORY)
+    private readonly providerRepository: ProviderRepository,
+    @Inject(USER_REPOSITORY)
+    private readonly userRepository: UserRepository,
     private readonly logger: AppLoggerService,
   ) {
     this.logger.setContext(ProviderService.name);
@@ -25,9 +26,7 @@ export class ProviderService {
     try {
       this.logger.info(`Creating provider with name: ${createProviderDto.id}`);
 
-      const user = await this.userRepository.findOneBy({
-        id: createProviderDto.id,
-      });
+      const user = await this.userRepository.findById(createProviderDto.id);
       if (!user) {
         throw new BadRequestException('User not found');
       }
@@ -57,9 +56,7 @@ export class ProviderService {
     try {
       this.logger.info('Fetching all providers');
 
-      const providers = await this.providerRepository.find({
-        relations: ['user'],
-      });
+      const providers = await this.providerRepository.findAll();
 
       this.logger.info(`Found ${providers.length} providers`);
 
@@ -84,10 +81,7 @@ export class ProviderService {
     try {
       this.logger.info(`Fetching provider with ID: ${id}`);
 
-      const provider = await this.providerRepository.findOne({
-        where: { id },
-        relations: ['user'],
-      });
+      const provider = await this.providerRepository.findById(id);
 
       if (provider) {
         this.logger.info(`Provider found: ${provider.name}`);
@@ -119,10 +113,7 @@ export class ProviderService {
     try {
       this.logger.info(`Updating provider with ID: ${id}`);
 
-      const provider = await this.providerRepository.findOne({
-        where: { id },
-        relations: ['user'],
-      });
+      const provider = await this.providerRepository.findById(id);
 
       if (!provider) return null;
 
@@ -136,7 +127,10 @@ export class ProviderService {
         );
       }
 
-      const updatedProvider = await this.providerRepository.save(provider);
+      const updatedProvider = await this.providerRepository.update(
+        id,
+        provider,
+      );
 
       this.logger.info(`Provider updated: ${updatedProvider.name}`);
 

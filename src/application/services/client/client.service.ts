@@ -1,20 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Injectable, Inject } from '@nestjs/common';
 import { Client } from '../../../domain/entities/client.entity';
-import { User } from '../../../domain/entities/user.entity';
 import { CreateClientDto } from '../../dtos/client/create-client.dto';
 import { UpdateClientDto } from '../../dtos/client/update-client.dto';
 import { ReadClientDto } from '../../dtos/client/read-client.dto';
 import { AppLoggerService } from '../logger/logger.service';
+import type { ClientRepository } from '../../../domain/repositories/client.repository';
+import { CLIENT_REPOSITORY } from '../../../domain/repositories/client.repository';
+import type { UserRepository } from '../../../domain/repositories/user.repository';
+import { USER_REPOSITORY } from '../../../domain/repositories/user.repository';
 
 @Injectable()
 export class ClientService {
   constructor(
-    @InjectRepository(Client)
-    private readonly clientRepository: Repository<Client>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @Inject(CLIENT_REPOSITORY)
+    private readonly clientRepository: ClientRepository,
+    @Inject(USER_REPOSITORY)
+    private readonly userRepository: UserRepository,
     private readonly logger: AppLoggerService,
   ) {
     this.logger.setContext(ClientService.name);
@@ -24,18 +25,15 @@ export class ClientService {
     try {
       this.logger.info(`Creating client with ID: ${createClientDto.id}`);
 
-      const user = await this.userRepository.findOneBy({
-        id: createClientDto.id,
-      });
+      const user = await this.userRepository.findById(createClientDto.id);
       if (!user) {
         throw new Error(`User with ID ${createClientDto.id} not found`);
       }
 
-      const client = {
-        id: createClientDto.id,
-        user: user,
-        name: createClientDto.name,
-      };
+      const client = new Client();
+      client.id = createClientDto.id;
+      client.user = user;
+      client.name = createClientDto.name;
 
       const savedClient = await this.clientRepository.save(client);
 
@@ -52,7 +50,7 @@ export class ClientService {
     try {
       this.logger.info('Fetching all clients');
 
-      const clients = await this.clientRepository.find({ relations: ['user'] });
+      const clients = await this.clientRepository.findAll();
 
       this.logger.info(`Found ${clients.length} clients`);
 
@@ -60,7 +58,7 @@ export class ClientService {
         id: client.id,
         user: {
           id: client.user.id,
-          email: client.user.email as unknown as string,
+          email: client.user.email.toString(),
           ativo: client.user.ativo,
         },
         name: client.name,
@@ -75,10 +73,7 @@ export class ClientService {
     try {
       this.logger.info(`Fetching client with ID: ${id}`);
 
-      const client = await this.clientRepository.findOne({
-        where: { id },
-        relations: ['user'],
-      });
+      const client = await this.clientRepository.findById(id);
 
       if (client) {
         this.logger.info(`Client found: ${client.name}`);
@@ -86,7 +81,7 @@ export class ClientService {
           id: client.id,
           user: {
             id: client.user.id,
-            email: client.user.email as unknown as string,
+            email: client.user.email.toString(),
             ativo: client.user.ativo,
           },
           name: client.name,
@@ -108,15 +103,17 @@ export class ClientService {
     try {
       this.logger.info(`Updating client with ID: ${id}`);
 
-      const client = await this.clientRepository.findOneBy({ id });
+      const client = await this.clientRepository.findById(id);
 
       if (!client) return null;
 
+      const updatedData: Partial<Client> = {};
+
       if (updateClientDto.name) {
-        client.name = updateClientDto.name;
+        updatedData.name = updateClientDto.name;
       }
 
-      const updatedClient = await this.clientRepository.save(client);
+      const updatedClient = await this.clientRepository.update(id, updatedData);
 
       this.logger.info(`Client updated: ${updatedClient.name}`);
 

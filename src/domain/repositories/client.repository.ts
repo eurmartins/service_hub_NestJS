@@ -1,5 +1,7 @@
 import { Client } from '../entities/client.entity';
 
+export const CLIENT_REPOSITORY = Symbol('ClientRepository');
+
 export interface ClientRepository {
   save(client: Client): Promise<Client>;
   findById(id: string): Promise<Client | null>;

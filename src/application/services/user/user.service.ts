@@ -1,6 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Injectable, Inject } from '@nestjs/common';
 import { User } from '../../../domain/entities/user.entity';
 import { CreateUserDto } from '../../dtos/user/create-user.dto';
 import { UpdateUserDto } from '../../dtos/user/update-user.dto';
@@ -9,12 +7,14 @@ import { HashService } from './hash.service';
 import { AppLoggerService } from '../logger/logger.service';
 import { Email } from '../../../domain/values-objects/user.values-objects/email.values-objects';
 import { HashPassword } from '../../../domain/values-objects/user.values-objects/hashpassword.values-objects';
+import type { UserRepository } from '../../../domain/repositories/user.repository';
+import { USER_REPOSITORY } from '../../../domain/repositories/user.repository';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @Inject(USER_REPOSITORY)
+    private readonly userRepository: UserRepository,
     private readonly hashService: HashService,
     private readonly logger: AppLoggerService,
   ) {
@@ -30,7 +30,7 @@ export class UserService {
       const hashed = await this.hashService.hash(createUserDto.hashSenha);
       user.hashPassword = new HashPassword(hashed);
 
-      const savedUser = await this.userRepository.save(user);
+      const savedUser = await this.userRepository.create(user);
 
       this.logger.info(`User created with ID: ${savedUser.id}`);
 
@@ -47,7 +47,7 @@ export class UserService {
     try {
       this.logger.info('Fetching all users');
 
-      const users = await this.userRepository.find();
+      const users = await this.userRepository.findAll();
 
       this.logger.info(`Found ${users.length} users`);
 
@@ -66,7 +66,7 @@ export class UserService {
     try {
       this.logger.info(`Fetching user with ID: ${id}`);
 
-      const user = await this.userRepository.findOneBy({ id });
+      const user = await this.userRepository.findById(id);
 
       if (user) {
         this.logger.info(`User found: ${user.email.toString()}`);
@@ -89,7 +89,7 @@ export class UserService {
     try {
       this.logger.info(`Updating user with ID: ${id}`);
 
-      const user = await this.userRepository.findOneBy({ id });
+      const user = await this.userRepository.findById(id);
 
       if (!user) return null;
 
@@ -102,7 +102,7 @@ export class UserService {
         user.hashPassword = new HashPassword(hashed);
       }
 
-      const updatedUser = await this.userRepository.save(user);
+      const updatedUser = await this.userRepository.update(user);
 
       this.logger.info(`User updated: ${updatedUser.email.toString()}`);
 

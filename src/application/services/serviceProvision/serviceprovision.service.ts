@@ -1,8 +1,5 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { BadRequestException, Injectable, Inject } from '@nestjs/common';
 import { ServiceProvision } from 'src/domain/entities/serviceProvision.entity';
-import { Provider } from 'src/domain/entities/provider.entity';
 import { AppLoggerService } from '../logger/logger.service';
 import { CreateServiceProvisionDto } from 'src/application/dtos/serviceProvision/create-service-provision.dto';
 import { ReadServiceProvisionDto } from 'src/application/dtos/serviceProvision/read-service-provision.dto';
@@ -10,14 +7,18 @@ import { UpdateServiceProvisionDto } from 'src/application/dtos/serviceProvision
 import { Title } from 'src/domain/values-objects/serviceProvision.values-objects/title.values-objects';
 import { Description } from 'src/domain/values-objects/serviceProvision.values-objects/description.values-objects';
 import { Price } from 'src/domain/values-objects/serviceProvision.values-objects/price.values-objects';
+import type { ServiceProvisionRepository } from 'src/domain/repositories/serviceProvision.repository';
+import { SERVICE_PROVISION_REPOSITORY } from 'src/domain/repositories/serviceProvision.repository';
+import type { ProviderRepository } from 'src/domain/repositories/provider.repository';
+import { PROVIDER_REPOSITORY } from 'src/domain/repositories/provider.repository';
 
 @Injectable()
 export class ServiceProvisionService {
   constructor(
-    @InjectRepository(ServiceProvision)
-    private readonly serviceProvisionRepository: Repository<ServiceProvision>,
-    @InjectRepository(Provider)
-    private readonly providerRepository: Repository<Provider>,
+    @Inject(SERVICE_PROVISION_REPOSITORY)
+    private readonly serviceProvisionRepository: ServiceProvisionRepository,
+    @Inject(PROVIDER_REPOSITORY)
+    private readonly providerRepository: ProviderRepository,
     private readonly logger: AppLoggerService,
   ) {
     this.logger.setContext(ServiceProvisionService.name);
@@ -31,9 +32,9 @@ export class ServiceProvisionService {
         `Creating service provision with title: ${createServiceProvisionDto.title}`,
       );
 
-      const provider = await this.providerRepository.findOneBy({
-        id: createServiceProvisionDto.providerId,
-      });
+      const provider = await this.providerRepository.findById(
+        createServiceProvisionDto.providerId,
+      );
 
       if (!provider) {
         throw new BadRequestException('Provider not found');
@@ -71,9 +72,7 @@ export class ServiceProvisionService {
     try {
       this.logger.info('Fetching all service provisions');
 
-      const serviceProvisions = await this.serviceProvisionRepository.find({
-        relations: ['provider', 'provider.user'],
-      });
+      const serviceProvisions = await this.serviceProvisionRepository.findAll();
 
       this.logger.info(`Found ${serviceProvisions.length} service provisions`);
 
@@ -107,10 +106,8 @@ export class ServiceProvisionService {
     try {
       this.logger.info(`Fetching service provision with ID: ${id}`);
 
-      const serviceProvision = await this.serviceProvisionRepository.findOne({
-        where: { id },
-        relations: ['provider', 'provider.user'],
-      });
+      const serviceProvision =
+        await this.serviceProvisionRepository.findById(id);
 
       if (!serviceProvision) {
         this.logger.error(`Service provision not found with ID: ${id}`);
@@ -154,10 +151,8 @@ export class ServiceProvisionService {
     try {
       this.logger.info(`Updating service provision with ID: ${id}`);
 
-      const serviceProvision = await this.serviceProvisionRepository.findOne({
-        where: { id },
-        relations: ['provider'],
-      });
+      const serviceProvision =
+        await this.serviceProvisionRepository.findById(id);
 
       if (!serviceProvision) {
         return null;
@@ -178,9 +173,9 @@ export class ServiceProvisionService {
       }
 
       if (updateServiceProvisionDto.providerId) {
-        const provider = await this.providerRepository.findOneBy({
-          id: updateServiceProvisionDto.providerId,
-        });
+        const provider = await this.providerRepository.findById(
+          updateServiceProvisionDto.providerId,
+        );
 
         if (!provider) {
           throw new BadRequestException('Provider not found');
@@ -194,7 +189,7 @@ export class ServiceProvisionService {
       }
 
       const updatedServiceProvision =
-        await this.serviceProvisionRepository.save(serviceProvision);
+        await this.serviceProvisionRepository.update(id, serviceProvision);
 
       this.logger.info(
         `Service provision updated: ${updatedServiceProvision.title.toString()}`,

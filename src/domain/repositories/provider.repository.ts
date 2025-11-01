@@ -1,5 +1,7 @@
 import { Provider } from '../entities/provider.entity';
 
+export const PROVIDER_REPOSITORY = Symbol('ProviderRepository');
+
 export interface ProviderRepository {
   save(provider: Provider): Promise<Provider>;
   findById(id: string): Promise<Provider | null>;

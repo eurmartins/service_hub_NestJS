@@ -7,6 +7,7 @@ import { UserModule } from './infrastructure/modules/user.module';
 import { DatabaseModule } from './infrastructure/database/database.module';
 import { LoggerModule } from './infrastructure/modules/global/logger.module';
 import { ProviderModule } from './infrastructure/modules/provider.module';
+import { ServiceProvisionModule } from './infrastructure/modules/serviceprovision.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ProviderModule } from './infrastructure/modules/provider.module';
     LoggerModule,
     ClientModule,
     ProviderModule,
+    ServiceProvisionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

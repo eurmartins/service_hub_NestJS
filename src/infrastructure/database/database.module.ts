@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from '../../domain/entities/user.entity';
 import { Client } from 'src/domain/entities/client.entity';
 import { Provider } from 'src/domain/entities/provider.entity';
+import { ServiceProvision } from 'src/domain/entities/serviceProvision.entity';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { Provider } from 'src/domain/entities/provider.entity';
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
         url: configService.get('URL_DB'),
-        entities: [User, Client, Provider],
+        entities: [User, Client, Provider, ServiceProvision],
         synchronize: true,
       }),
       inject: [ConfigService],

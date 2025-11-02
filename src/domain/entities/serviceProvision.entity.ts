@@ -56,7 +56,7 @@ export class ServiceProvision {
   }
 
   get price(): Price {
-    return new Price(this._price);
+    return Price.parseStringToDouble(this._price);
   }
 
   set price(price: Price) {

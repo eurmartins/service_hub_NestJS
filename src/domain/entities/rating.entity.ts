@@ -39,7 +39,6 @@ export class Rating {
   @CreateDateColumn()
   createdAt: Date;
 
-  // Relationships
   @OneToOne(() => Order)
   @JoinColumn({ name: 'orderId' })
   order: Order;

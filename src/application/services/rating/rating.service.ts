@@ -327,7 +327,7 @@ export class RatingService {
                 user: {
                   id: rating.order.client.user.id,
                   email: rating.order.client.user.email.toString(),
-                  ativo: rating.order.client.user.ativo,
+                  active: rating.order.client.user.active,
                 },
               },
             }
@@ -340,7 +340,7 @@ export class RatingService {
               user: {
                 id: rating.client.user.id,
                 email: rating.client.user.email.toString(),
-                ativo: rating.client.user.ativo,
+                active: rating.client.user.active,
               },
             }
           : undefined,
@@ -353,7 +353,7 @@ export class RatingService {
               user: {
                 id: rating.provider.user.id,
                 email: rating.provider.user.email.toString(),
-                ativo: rating.provider.user.ativo,
+                active: rating.provider.user.active,
               },
             }
           : undefined,

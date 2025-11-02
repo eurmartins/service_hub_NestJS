@@ -14,7 +14,7 @@ export class User {
   private _hashPassword: string;
 
   @Column({ default: true })
-  ativo: boolean;
+  active: boolean;
 
   get email(): Email {
     return new Email(this._email);

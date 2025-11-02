@@ -8,5 +8,5 @@ export class ReadUserDto {
   email: string;
 
   @IsBoolean()
-  ativo: boolean;
+  active: boolean;
 }

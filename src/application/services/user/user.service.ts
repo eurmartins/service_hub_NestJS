@@ -54,7 +54,7 @@ export class UserService {
       return users.map((user) => ({
         id: user.id,
         email: user.email.toString(),
-        ativo: user.ativo,
+        active: user.active,
       }));
     } catch (error) {
       this.logger.error(`Error to fetch all users. Error details: ${error}`);
@@ -73,7 +73,7 @@ export class UserService {
         return {
           id: user.id,
           email: user.email.toString(),
-          ativo: user.ativo,
+          active: user.active,
         };
       } else {
         this.logger.error(`User with ID ${id} not found`);

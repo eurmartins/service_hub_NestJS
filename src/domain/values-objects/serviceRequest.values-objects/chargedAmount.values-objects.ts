@@ -1,18 +1,18 @@
-export class Price {
+export class ChargedAmount {
   private readonly value: number;
 
   private constructor(value: number) {
     this.value = Number(value.toFixed(2));
   }
 
-  static create(value: number): Price {
-    if (!Price.isValid(value)) {
-      throw new Error('Price must be a positive number');
+  static create(value: number): ChargedAmount {
+    if (!ChargedAmount.isValid(value)) {
+      throw new Error('ChargedAmount must be a positive number');
     }
-    return new Price(value);
+    return new ChargedAmount(value);
   }
 
-  static parseStringToDouble(value: any): Price {
+  static fromDatabase(value: any): ChargedAmount {
     let numericValue: number;
 
     if (typeof value === 'string') {
@@ -21,17 +21,17 @@ export class Price {
       numericValue = value;
     } else {
       console.warn(
-        `Invalid price type for value: ${value} (type: ${typeof value})`,
+        `Invalid chargedAmount type for value: ${value} (type: ${typeof value})`,
       );
       numericValue = 0;
     }
 
     if (isNaN(numericValue)) {
-      console.warn(`Price value is NaN after conversion: ${value}`);
+      console.warn(`ChargedAmount value is NaN after conversion: ${value}`);
       numericValue = 0;
     }
 
-    return new Price(numericValue);
+    return new ChargedAmount(numericValue);
   }
 
   static isValid(value: number): boolean {
@@ -49,7 +49,7 @@ export class Price {
     return this.value.toFixed(2);
   }
 
-  equals(other: Price): boolean {
+  equals(other: ChargedAmount): boolean {
     return this.value === other.value;
   }
 }

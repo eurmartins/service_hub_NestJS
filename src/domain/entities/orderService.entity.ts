@@ -7,12 +7,12 @@ import {
 } from 'typeorm';
 import { StatusEnum } from './enums/status.enum';
 import { Provider } from './provider.entity';
-import { Title } from '../values-objects/serviceProvision.values-objects/title.values-objects';
-import { Description } from '../values-objects/serviceProvision.values-objects/description.values-objects';
-import { Price } from '../values-objects/serviceProvision.values-objects/price.values-objects';
+import { Title } from '../values-objects/orderService.values-objects/title.values-objects';
+import { Description } from '../values-objects/orderService.values-objects/description.values-objects';
+import { Price } from '../values-objects/orderService.values-objects/price.values-objects';
 
 @Entity()
-export class ServiceProvision {
+export class OrderService {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

@@ -8,15 +8,15 @@ import {
   BeforeInsert,
   Check,
 } from 'typeorm';
-import { ServiceRequestStatusEnum } from './enums/status.enum';
+import { OrderStatusEnum } from './enums/status.enum';
 import { Client } from './client.entity';
 import { Provider } from './provider.entity';
-import { ServiceProvision } from './serviceProvision.entity';
-import { ChargedAmount } from '../values-objects/serviceRequest.values-objects/chargedAmount.values-objects';
+import { OrderService } from './orderService.entity';
+import { ChargedAmount } from '../values-objects/order.values-objects/chargedAmount.values-objects';
 
 @Entity()
 @Check(`"clientId" != "providerId"`)
-export class ServiceRequest {
+export class Order {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -34,10 +34,10 @@ export class ServiceRequest {
 
   @Column({
     type: 'enum',
-    enum: ServiceRequestStatusEnum,
-    default: ServiceRequestStatusEnum.PENDING,
+    enum: OrderStatusEnum,
+    default: OrderStatusEnum.PENDING,
   })
-  status: ServiceRequestStatusEnum;
+  status: OrderStatusEnum;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -49,9 +49,9 @@ export class ServiceRequest {
   @JoinColumn({ name: 'clientId' })
   client: Client;
 
-  @ManyToOne(() => ServiceProvision)
+  @ManyToOne(() => OrderService)
   @JoinColumn({ name: 'serviceId' })
-  service: ServiceProvision;
+  service: OrderService;
 
   @ManyToOne(() => Provider)
   @JoinColumn({ name: 'providerId' })
@@ -73,31 +73,26 @@ export class ServiceRequest {
   }
 
   canBeCancelled(): boolean {
-    return this.status === ServiceRequestStatusEnum.PENDING;
+    return this.status === OrderStatusEnum.PENDING;
   }
 
   canProgressToInProgress(): boolean {
-    return this.status === ServiceRequestStatusEnum.PENDING;
+    return this.status === OrderStatusEnum.PENDING;
   }
 
   canProgressToCompleted(): boolean {
-    return this.status === ServiceRequestStatusEnum.IN_PROGRESS;
+    return this.status === OrderStatusEnum.IN_PROGRESS;
   }
 
-  updateStatus(newStatus: ServiceRequestStatusEnum): void {
-    const validTransitions: Record<
-      ServiceRequestStatusEnum,
-      ServiceRequestStatusEnum[]
-    > = {
-      [ServiceRequestStatusEnum.PENDING]: [
-        ServiceRequestStatusEnum.IN_PROGRESS,
-        ServiceRequestStatusEnum.CANCELLED,
+  updateStatus(newStatus: OrderStatusEnum): void {
+    const validTransitions: Record<OrderStatusEnum, OrderStatusEnum[]> = {
+      [OrderStatusEnum.PENDING]: [
+        OrderStatusEnum.IN_PROGRESS,
+        OrderStatusEnum.CANCELLED,
       ],
-      [ServiceRequestStatusEnum.IN_PROGRESS]: [
-        ServiceRequestStatusEnum.COMPLETED,
-      ],
-      [ServiceRequestStatusEnum.COMPLETED]: [],
-      [ServiceRequestStatusEnum.CANCELLED]: [],
+      [OrderStatusEnum.IN_PROGRESS]: [OrderStatusEnum.COMPLETED],
+      [OrderStatusEnum.COMPLETED]: [],
+      [OrderStatusEnum.CANCELLED]: [],
     };
 
     if (!validTransitions[this.status].includes(newStatus)) {
@@ -108,13 +103,13 @@ export class ServiceRequest {
 
     this.status = newStatus;
 
-    if (newStatus === ServiceRequestStatusEnum.COMPLETED) {
+    if (newStatus === OrderStatusEnum.COMPLETED) {
       this.completedAt = new Date();
     }
   }
 
   isPendingFor48Hours(): boolean {
-    if (this.status !== ServiceRequestStatusEnum.PENDING) {
+    if (this.status !== OrderStatusEnum.PENDING) {
       return false;
     }
 
@@ -127,7 +122,7 @@ export class ServiceRequest {
 
   autoCancel(): void {
     if (this.isPendingFor48Hours()) {
-      this.status = ServiceRequestStatusEnum.CANCELLED;
+      this.status = OrderStatusEnum.CANCELLED;
     }
   }
 }

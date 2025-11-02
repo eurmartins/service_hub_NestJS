@@ -1,0 +1,802 @@
+{
+	"info": {
+		"_postman_id": "a93a99c3-b9ab-40dd-97be-0e42b4fa9961",
+		"name": "NestJS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "35020044"
+	},
+	"item": [
+		{
+			"name": "Service_Hub_NestJS",
+			"item": [
+				{
+					"name": "users",
+					"item": [
+						{
+							"name": "getAllUsers",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{LOCAL_DEV}}/users",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createUser",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{LOCAL_DEV}}/users",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getUserById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{LOCAL_DEV}}/users/8292fb3c-19a1-4535-b6b4-cd362a08d1fb",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"users",
+										"8292fb3c-19a1-4535-b6b4-cd362a08d1fb"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateUser",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{LOCAL_DEV}}/users/8292fb3c-19a1-4535-b6b4-cd362a08d1fb",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"users",
+										"8292fb3c-19a1-4535-b6b4-cd362a08d1fb"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteUserById",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{LOCAL_DEV}}/users/8292fb3c-19a1-4535-b6b4-cd362a08d1fb",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"users",
+										"8292fb3c-19a1-4535-b6b4-cd362a08d1fb"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "clients",
+					"item": [
+						{
+							"name": "createClient",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{LOCAL_DEV}}/clients",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"clients"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllClients",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{LOCAL_DEV}}/clients",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"clients"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getClientById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{LOCAL_DEV}}/clients/8292fb3c-19a1-4535-b6b4-cd362a08d1fb",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"clients",
+										"8292fb3c-19a1-4535-b6b4-cd362a08d1fb"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateClient",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{LOCAL_DEV}}/clients/8292fb3c-19a1-4535-b6b4-cd362a08d1fb",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"clients",
+										"8292fb3c-19a1-4535-b6b4-cd362a08d1fb"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteClient",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{LOCAL_DEV}}/clients/8292fb3c-19a1-4535-b6b4-cd362a08d1fb",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"clients",
+										"8292fb3c-19a1-4535-b6b4-cd362a08d1fb"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "providers",
+					"item": [
+						{
+							"name": "getAllProviders",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{LOCAL_DEV}}/providers",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"providers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createProvider",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Eletricista\",\r\n    \"prof_description\": \"Especializada em atendimento domestico e eletrico.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/providers",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"providers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getProviderById",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Eletricista\",\r\n    \"prof_description\": \"Especializada em atendimento domestico e eletrico.\"\r\n}"
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/providers/8292fb3c-19a1-4535-b6b4-cd362a08d1fb",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"providers",
+										"8292fb3c-19a1-4535-b6b4-cd362a08d1fb"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateProvider",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Eletricista\",\r\n    \"prof_description\": \"Especializada em atendimento domestico e eletrico.\"\r\n}"
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/providers/8292fb3c-19a1-4535-b6b4-cd362a08d1fb",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"providers",
+										"8292fb3c-19a1-4535-b6b4-cd362a08d1fb"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteProviderById",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Eletricista\",\r\n    \"prof_description\": \"Especializada em atendimento domestico e eletrico.\"\r\n}"
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/providers/8292fb3c-19a1-4535-b6b4-cd362a08d1fb",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"providers",
+										"8292fb3c-19a1-4535-b6b4-cd362a08d1fb"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "orderService",
+					"item": [
+						{
+							"name": "createOrderServices",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"Atração de Circo\",\r\n  \"description\": \"Atração de circo, sendo responsavel por malabarismo\",\r\n  \"price\": 2500.00,\r\n  \"providerId\": \"210c5929-339a-4f5d-ac61-6cf4d9c6ef62\",\r\n  \"status\": \"active\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/order-services",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"order-services"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllOrderServices",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/order-services",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"order-services"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOrderServicesById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{LOCAL_DEV}}/order-services/40c6fd3c-54c5-4376-b585-5cf8cd184e45",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"order-services",
+										"40c6fd3c-54c5-4376-b585-5cf8cd184e45"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateOrderService",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"Desenvolvimento de Aplicativo Mobile\",\r\n  \"description\": \"Desenvolvimento completo de aplicativo mobile para iOS e Android com integração de APIs e banco de dados\",\r\n  \"price\": 2500.00,\r\n  \"providerId\": \"550e8400-e29b-41d4-a716-446655440002\",\r\n  \"status\": \"active\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/order-services/5e44e362-e35d-407e-ab0d-cee3ebc5de6c",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"order-services",
+										"5e44e362-e35d-407e-ab0d-cee3ebc5de6c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteOrderService",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/order-services/5e44e362-e35d-407e-ab0d-cee3ebc5de6c",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"order-services",
+										"5e44e362-e35d-407e-ab0d-cee3ebc5de6c"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "orders",
+					"item": [
+						{
+							"name": "createOrder",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"clientId\": \"8812fefe-2736-4eb9-8194-1ef77bf82b57\",\r\n  \"serviceId\": \"40c6fd3c-54c5-4376-b585-5cf8cd184e45\",\r\n  \"providerId\": \"04070ad1-d120-4b3b-ae48-bdf8d1ba4311\",\r\n  \"chargedAmount\": 900.59\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/orders",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllOrders",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"clientId\": \"8292fb3c-19a1-4535-b6b4-cd362a08d1fb\",\r\n  \"serviceId\": \"5e44e362-e35d-407e-ab0d-cee3ebc5de6c\",\r\n  \"providerId\": \"210c5929-339a-4f5d-ac61-6cf4d9c6ef62\",\r\n  \"chargedAmount\": 250.99\r\n}"
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/orders",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOrderById",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"clientId\": \"8292fb3c-19a1-4535-b6b4-cd362a08d1fb\",\r\n  \"serviceId\": \"5e44e362-e35d-407e-ab0d-cee3ebc5de6c\",\r\n  \"providerId\": \"210c5929-339a-4f5d-ac61-6cf4d9c6ef62\",\r\n  \"chargedAmount\": 250.99\r\n}"
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/orders/8119e528-8132-4700-95b4-2e4e92372cfd",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"orders",
+										"8119e528-8132-4700-95b4-2e4e92372cfd"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteOrdersById",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"clientId\": \"8292fb3c-19a1-4535-b6b4-cd362a08d1fb\",\r\n  \"serviceId\": \"5e44e362-e35d-407e-ab0d-cee3ebc5de6c\",\r\n  \"providerId\": \"210c5929-339a-4f5d-ac61-6cf4d9c6ef62\",\r\n  \"chargedAmount\": 250.99\r\n}"
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/service-requests/8119e528-8132-4700-95b4-2e4e92372cfd",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"service-requests",
+										"8119e528-8132-4700-95b4-2e4e92372cfd"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateStatusorder",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"status\": \"in_progress\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/orders/8119e528-8132-4700-95b4-2e4e92372cfd/status",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"orders",
+										"8119e528-8132-4700-95b4-2e4e92372cfd",
+										"status"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "rating",
+					"item": [
+						{
+							"name": "createRating",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"orderId\": \"8fb47219-d810-4416-87d9-8e4b8c467cbb\",\r\n  \"clientId\": \"8292fb3c-19a1-4535-b6b4-cd362a08d1fb\",\r\n  \"providerId\": \"210c5929-339a-4f5d-ac61-6cf4d9c6ef62\",\r\n  \"score\": 5,\r\n  \"comment\": \"Excelente serviço, muito profissional!\"\r\n}\r\n//apenas orders completed",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/ratings",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"ratings"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getRatingByID",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"orderId\": \"8fb47219-d810-4416-87d9-8e4b8c467cbb\",\r\n  \"clientId\": \"8292fb3c-19a1-4535-b6b4-cd362a08d1fb\",\r\n  \"providerId\": \"210c5929-339a-4f5d-ac61-6cf4d9c6ef62\",\r\n  \"score\": 5,\r\n  \"comment\": \"Excelente serviço, muito profissional!\"\r\n}\r\n//apenas orders completed"
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/ratings/c856e19a-d085-4198-aad8-3b06e3e81942",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"ratings",
+										"c856e19a-d085-4198-aad8-3b06e3e81942"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllRating",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"orderId\": \"8fb47219-d810-4416-87d9-8e4b8c467cbb\",\r\n  \"clientId\": \"8292fb3c-19a1-4535-b6b4-cd362a08d1fb\",\r\n  \"providerId\": \"210c5929-339a-4f5d-ac61-6cf4d9c6ef62\",\r\n  \"score\": 5,\r\n  \"comment\": \"Excelente serviço, muito profissional!\"\r\n}\r\n//apenas orders completed"
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/ratings",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"ratings"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getRatingByOrderId",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"orderId\": \"8fb47219-d810-4416-87d9-8e4b8c467cbb\",\r\n  \"clientId\": \"8292fb3c-19a1-4535-b6b4-cd362a08d1fb\",\r\n  \"providerId\": \"210c5929-339a-4f5d-ac61-6cf4d9c6ef62\",\r\n  \"score\": 5,\r\n  \"comment\": \"Excelente serviço, muito profissional!\"\r\n}\r\n//apenas orders completed"
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/ratings/order/8fb47219-d810-4416-87d9-8e4b8c467cbb",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"ratings",
+										"order",
+										"8fb47219-d810-4416-87d9-8e4b8c467cbb"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getRatingByClientId",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"orderId\": \"8fb47219-d810-4416-87d9-8e4b8c467cbb\",\r\n  \"clientId\": \"8292fb3c-19a1-4535-b6b4-cd362a08d1fb\",\r\n  \"providerId\": \"210c5929-339a-4f5d-ac61-6cf4d9c6ef62\",\r\n  \"score\": 5,\r\n  \"comment\": \"Excelente serviço, muito profissional!\"\r\n}\r\n//apenas orders completed"
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/ratings/client/8292fb3c-19a1-4535-b6b4-cd362a08d1fb",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"ratings",
+										"client",
+										"8292fb3c-19a1-4535-b6b4-cd362a08d1fb"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getRatingByProviderId",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"orderId\": \"8fb47219-d810-4416-87d9-8e4b8c467cbb\",\r\n  \"clientId\": \"8292fb3c-19a1-4535-b6b4-cd362a08d1fb\",\r\n  \"providerId\": \"210c5929-339a-4f5d-ac61-6cf4d9c6ef62\",\r\n  \"score\": 5,\r\n  \"comment\": \"Excelente serviço, muito profissional!\"\r\n}\r\n//apenas orders completed"
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/ratings/provider/210c5929-339a-4f5d-ac61-6cf4d9c6ef62",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"ratings",
+										"provider",
+										"210c5929-339a-4f5d-ac61-6cf4d9c6ef62"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAverageRatingByProviderId",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"orderId\": \"8fb47219-d810-4416-87d9-8e4b8c467cbb\",\r\n  \"clientId\": \"8292fb3c-19a1-4535-b6b4-cd362a08d1fb\",\r\n  \"providerId\": \"210c5929-339a-4f5d-ac61-6cf4d9c6ef62\",\r\n  \"score\": 5,\r\n  \"comment\": \"Excelente serviço, muito profissional!\"\r\n}\r\n//apenas orders completed"
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/ratings/provider/210c5929-339a-4f5d-ac61-6cf4d9c6ef62/average",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"ratings",
+										"provider",
+										"210c5929-339a-4f5d-ac61-6cf4d9c6ef62",
+										"average"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateRating",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"orderId\": \"8fb47219-d810-4416-87d9-8e4b8c467cbb\",\r\n  \"clientId\": \"8292fb3c-19a1-4535-b6b4-cd362a08d1fb\",\r\n  \"providerId\": \"210c5929-339a-4f5d-ac61-6cf4d9c6ef62\",\r\n  \"score\": 5,\r\n  \"comment\": \"Excelente serviço, muito profissional!\"\r\n}\r\n//apenas orders completed"
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/ratings/a691e6e4-3bd5-4ec9-938b-0fc653feae72",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"ratings",
+										"a691e6e4-3bd5-4ec9-938b-0fc653feae72"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteRating",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"orderId\": \"8fb47219-d810-4416-87d9-8e4b8c467cbb\",\r\n  \"clientId\": \"8292fb3c-19a1-4535-b6b4-cd362a08d1fb\",\r\n  \"providerId\": \"210c5929-339a-4f5d-ac61-6cf4d9c6ef62\",\r\n  \"score\": 5,\r\n  \"comment\": \"Excelente serviço, muito profissional!\"\r\n}\r\n//apenas orders completed"
+								},
+								"url": {
+									"raw": "{{LOCAL_DEV}}/ratings/provider/210c5929-339a-4f5d-ac61-6cf4d9c6ef62/average",
+									"host": [
+										"{{LOCAL_DEV}}"
+									],
+									"path": [
+										"ratings",
+										"provider",
+										"210c5929-339a-4f5d-ac61-6cf4d9c6ef62",
+										"average"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"description": "Collections with All requests of project"
+		}
+	]
+}

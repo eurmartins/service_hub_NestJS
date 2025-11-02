@@ -10,7 +10,7 @@ import { Type } from 'class-transformer';
 import { StatusEnum } from 'src/domain/entities/enums/status.enum';
 import { ReadProviderDto } from '../provider/read-provider.dto';
 
-export class ReadServiceProvisionDto {
+export class ReadOrderServiceDto {
   @IsUUID()
   id: string;
 

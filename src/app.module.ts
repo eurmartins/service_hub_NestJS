@@ -7,8 +7,9 @@ import { UserModule } from './infrastructure/modules/user.module';
 import { DatabaseModule } from './infrastructure/database/database.module';
 import { LoggerModule } from './infrastructure/modules/global/logger.module';
 import { ProviderModule } from './infrastructure/modules/provider.module';
-import { ServiceProvisionModule } from './infrastructure/modules/serviceprovision.module';
-import { ServiceRequestModule } from './infrastructure/modules/serviceRequest.module';
+import { OrderServiceModule } from './infrastructure/modules/orderService.module';
+import { OrderModule } from './infrastructure/modules/order.module';
+import { RatingModule } from './infrastructure/modules/rating.module';
 
 @Module({
   imports: [
@@ -18,8 +19,9 @@ import { ServiceRequestModule } from './infrastructure/modules/serviceRequest.mo
     LoggerModule,
     ClientModule,
     ProviderModule,
-    ServiceProvisionModule,
-    ServiceRequestModule,
+    OrderServiceModule,
+    OrderModule,
+    RatingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

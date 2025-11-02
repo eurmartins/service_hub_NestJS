@@ -7,12 +7,12 @@ import {
   IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ServiceRequestStatusEnum } from '../../../domain/entities/enums/status.enum';
+import { OrderStatusEnum } from '../../../domain/entities/enums/status.enum';
 import { ReadClientDto } from '../client/read-client.dto';
 import { ReadProviderDto } from '../provider/read-provider.dto';
-import { ReadServiceProvisionDto } from '../serviceProvision/read-service-provision.dto';
+import { ReadOrderServiceDto } from '../orderService/read-orderService.dto';
 
-export class ReadServiceRequestDto {
+export class ReadOrderDto {
   @IsUUID()
   id: string;
 
@@ -28,8 +28,8 @@ export class ReadServiceRequestDto {
   @IsNumber()
   chargedAmount: number;
 
-  @IsEnum(ServiceRequestStatusEnum)
-  status: ServiceRequestStatusEnum;
+  @IsEnum(OrderStatusEnum)
+  status: OrderStatusEnum;
 
   @IsDateString()
   createdAt: Date;
@@ -45,8 +45,8 @@ export class ReadServiceRequestDto {
 
   @IsOptional()
   @ValidateNested()
-  @Type(() => ReadServiceProvisionDto)
-  service?: ReadServiceProvisionDto;
+  @Type(() => ReadOrderServiceDto)
+  service?: ReadOrderServiceDto;
 
   @IsOptional()
   @ValidateNested()

@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { StatusEnum } from 'src/domain/entities/enums/status.enum';
 
-export class CreateServiceProvisionDto {
+export class CreateOrderServiceDto {
   @IsString()
   @MinLength(3)
   @MaxLength(100)

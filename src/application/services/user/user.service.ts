@@ -27,7 +27,7 @@ export class UserService {
 
       const user = new User();
       user.email = new Email(createUserDto.email);
-      const hashed = await this.hashService.hash(createUserDto.hashSenha);
+      const hashed = await this.hashService.hash(createUserDto.HashPassword);
       user.hashPassword = new HashPassword(hashed);
 
       const savedUser = await this.userRepository.create(user);
@@ -97,8 +97,8 @@ export class UserService {
         user.email = new Email(updateUserDto.email);
       }
 
-      if (updateUserDto.hashSenha) {
-        const hashed = await this.hashService.hash(updateUserDto.hashSenha);
+      if (updateUserDto.HashPassword) {
+        const hashed = await this.hashService.hash(updateUserDto.HashPassword);
         user.hashPassword = new HashPassword(hashed);
       }
 

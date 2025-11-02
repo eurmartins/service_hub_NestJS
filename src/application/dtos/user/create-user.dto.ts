@@ -5,7 +5,7 @@ export class CreateUserDto {
   email: string;
 
   @IsString()
-  hashSenha: string;
+  HashPassword: string;
 
   @IsOptional()
   @IsBoolean()

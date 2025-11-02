@@ -8,6 +8,7 @@ import { DatabaseModule } from './infrastructure/database/database.module';
 import { LoggerModule } from './infrastructure/modules/global/logger.module';
 import { ProviderModule } from './infrastructure/modules/provider.module';
 import { ServiceProvisionModule } from './infrastructure/modules/serviceprovision.module';
+import { ServiceRequestModule } from './infrastructure/modules/serviceRequest.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ServiceProvisionModule } from './infrastructure/modules/serviceprovisio
     ClientModule,
     ProviderModule,
     ServiceProvisionModule,
+    ServiceRequestModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -5,6 +5,7 @@ import { User } from '../../domain/entities/user.entity';
 import { Client } from 'src/domain/entities/client.entity';
 import { Provider } from 'src/domain/entities/provider.entity';
 import { ServiceProvision } from 'src/domain/entities/serviceProvision.entity';
+import { ServiceRequest } from 'src/domain/entities/serviceRequest.entity';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { ServiceProvision } from 'src/domain/entities/serviceProvision.entity';
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
         url: configService.get('URL_DB'),
-        entities: [User, Client, Provider, ServiceProvision],
+        entities: [User, Client, Provider, ServiceProvision, ServiceRequest],
         synchronize: true,
       }),
       inject: [ConfigService],

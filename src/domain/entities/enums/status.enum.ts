@@ -3,7 +3,7 @@ export enum StatusEnum {
   INACTIVE = 'inactive',
 }
 
-export enum ServiceRequestStatusEnum {
+export enum OrderStatusEnum {
   PENDING = 'pending',
   IN_PROGRESS = 'in_progress',
   COMPLETED = 'completed',

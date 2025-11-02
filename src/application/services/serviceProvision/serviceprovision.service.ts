@@ -11,6 +11,9 @@ import type { ServiceProvisionRepository } from 'src/domain/repositories/service
 import { SERVICE_PROVISION_REPOSITORY } from 'src/domain/repositories/serviceProvision.repository';
 import type { ProviderRepository } from 'src/domain/repositories/provider.repository';
 import { PROVIDER_REPOSITORY } from 'src/domain/repositories/provider.repository';
+import type { ServiceRequestRepository } from 'src/domain/repositories/serviceRequest.repository';
+import { SERVICE_REQUEST_REPOSITORY } from 'src/domain/repositories/serviceRequest.repository';
+import { StatusEnum } from 'src/domain/entities/enums/status.enum';
 
 @Injectable()
 export class ServiceProvisionService {
@@ -19,6 +22,8 @@ export class ServiceProvisionService {
     private readonly serviceProvisionRepository: ServiceProvisionRepository,
     @Inject(PROVIDER_REPOSITORY)
     private readonly providerRepository: ProviderRepository,
+    @Inject(SERVICE_REQUEST_REPOSITORY)
+    private readonly serviceRequestRepository: ServiceRequestRepository,
     private readonly logger: AppLoggerService,
   ) {
     this.logger.setContext(ServiceProvisionService.name);
@@ -45,7 +50,7 @@ export class ServiceProvisionService {
       serviceProvision.description = new Description(
         createServiceProvisionDto.description,
       );
-      serviceProvision.price = new Price(createServiceProvisionDto.price);
+      serviceProvision.price = Price.create(createServiceProvisionDto.price);
       serviceProvision.providerId = createServiceProvisionDto.providerId;
 
       if (createServiceProvisionDto.status) {
@@ -169,7 +174,7 @@ export class ServiceProvisionService {
       }
 
       if (updateServiceProvisionDto.price) {
-        serviceProvision.price = new Price(updateServiceProvisionDto.price);
+        serviceProvision.price = Price.create(updateServiceProvisionDto.price);
       }
 
       if (updateServiceProvisionDto.providerId) {
@@ -206,14 +211,29 @@ export class ServiceProvisionService {
 
   async remove(id: string): Promise<void> {
     try {
-      this.logger.info(`Deleting service provision with ID: ${id}`);
+      this.logger.info(`Attempting to delete service provision with ID: ${id}`);
 
-      await this.serviceProvisionRepository.delete(id);
+      const linkedRequests =
+        await this.serviceRequestRepository.findByServiceId(id);
 
-      this.logger.info(`Service provision deleted with ID: ${id}`);
+      if (linkedRequests.length > 0) {
+        this.logger.info(
+          `Service provision has ${linkedRequests.length} linked requests. Inactivating instead of deleting.`,
+        );
+
+        await this.update(id, { status: StatusEnum.INACTIVE });
+
+        this.logger.info(
+          `Service provision inactivated due to linked requests: ${id}`,
+        );
+      } else {
+        await this.serviceProvisionRepository.delete(id);
+
+        this.logger.info(`Service provision physically deleted: ${id}`);
+      }
     } catch (error) {
       this.logger.error(
-        `Error deleting service provision with ID ${id}. Error: ${error}`,
+        `Error removing service provision with ID ${id}. Error: ${error}`,
       );
       throw error;
     }

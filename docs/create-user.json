@@ -1,0 +1,5 @@
+{
+  "email": "usuario@exemplo.com",
+  "hashSenha": "$2b$10$abcdefghijklmnopqrstuvxyz1234567890abcdefghijklmnopqrstuvxyz",
+  "ativo": true
+}

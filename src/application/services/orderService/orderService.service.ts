@@ -93,7 +93,7 @@ export class OrderServiceService {
           user: {
             id: os.provider.user.id,
             email: os.provider.user.email.toString(),
-            ativo: os.provider.user.ativo,
+            active: os.provider.user.active,
           },
           name: os.provider.name,
           prof_description: os.provider.prof_description.value,
@@ -118,9 +118,7 @@ export class OrderServiceService {
         return null;
       }
 
-      this.logger.info(
-        `Order service found: ${orderService.title.toString()}`,
-      );
+      this.logger.info(`Order service found: ${orderService.title.toString()}`);
 
       return {
         id: orderService.id,
@@ -134,7 +132,7 @@ export class OrderServiceService {
           user: {
             id: orderService.provider.user.id,
             email: orderService.provider.user.email.toString(),
-            ativo: orderService.provider.user.ativo,
+            active: orderService.provider.user.active,
           },
           name: orderService.provider.name,
           prof_description: orderService.provider.prof_description.value,
@@ -191,8 +189,10 @@ export class OrderServiceService {
         orderService.status = updateOrderServiceDto.status;
       }
 
-      const updatedOrderService =
-        await this.orderServiceRepository.update(id, orderService);
+      const updatedOrderService = await this.orderServiceRepository.update(
+        id,
+        orderService,
+      );
 
       this.logger.info(
         `Order service updated: ${updatedOrderService.title.toString()}`,
@@ -209,9 +209,7 @@ export class OrderServiceService {
 
   async remove(id: string): Promise<void> {
     try {
-      this.logger.info(
-        `Attempting to delete order service with ID: ${id}`,
-      );
+      this.logger.info(`Attempting to delete order service with ID: ${id}`);
 
       const linkedOrders = await this.orderRepository.findByServiceId(id);
 

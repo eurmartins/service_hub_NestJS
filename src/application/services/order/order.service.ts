@@ -47,9 +47,7 @@ export class OrderService {
       order.clientId = createOrderDto.clientId;
       order.serviceId = createOrderDto.serviceId;
       order.providerId = createOrderDto.providerId;
-      order.chargedAmount = ChargedAmount.create(
-        createOrderDto.chargedAmount,
-      );
+      order.chargedAmount = ChargedAmount.create(createOrderDto.chargedAmount);
       const savedOrder = await this.orderRepository.save(order);
 
       this.logger.info(`Order created with ID: ${savedOrder.id}`);
@@ -108,10 +106,7 @@ export class OrderService {
     }
   }
 
-  async updateStatus(
-    id: string,
-    newStatus: OrderStatusEnum,
-  ): Promise<Order> {
+  async updateStatus(id: string, newStatus: OrderStatusEnum): Promise<Order> {
     try {
       this.logger.info(
         `Updating status of order with ID: ${id} to ${newStatus}`,
@@ -154,14 +149,12 @@ export class OrderService {
               user: {
                 id: order.client.user.id,
                 email: order.client.user.email.toString(),
-                ativo: order.client.user.ativo,
+                active: order.client.user.active,
               },
             }
           : undefined,
       service:
-        order.service &&
-        order.service.provider &&
-        order.service.provider.user
+        order.service && order.service.provider && order.service.provider.user
           ? {
               id: order.service.id,
               title: order.service.title.toString(),
@@ -172,12 +165,11 @@ export class OrderService {
               provider: {
                 id: order.service.provider.id,
                 name: order.service.provider.name,
-                prof_description:
-                  order.service.provider.prof_description.value,
+                prof_description: order.service.provider.prof_description.value,
                 user: {
                   id: order.service.provider.user.id,
                   email: order.service.provider.user.email.toString(),
-                  ativo: order.service.provider.user.ativo,
+                  active: order.service.provider.user.active,
                 },
               },
             }
@@ -191,7 +183,7 @@ export class OrderService {
               user: {
                 id: order.provider.user.id,
                 email: order.provider.user.email.toString(),
-                ativo: order.provider.user.ativo,
+                active: order.provider.user.active,
               },
             }
           : undefined,

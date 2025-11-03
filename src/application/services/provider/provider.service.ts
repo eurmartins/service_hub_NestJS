@@ -65,7 +65,7 @@ export class ProviderService {
         user: {
           id: provider.user.id,
           email: provider.user.email.toString(),
-          ativo: provider.user.ativo,
+          active: provider.user.active,
         },
         name: provider.name,
         prof_description: provider.prof_description.value,
@@ -90,7 +90,7 @@ export class ProviderService {
           user: {
             id: provider.user.id,
             email: provider.user.email.toString(),
-            ativo: provider.user.ativo,
+            active: provider.user.active,
           },
           name: provider.name,
           prof_description: provider.prof_description.value,

@@ -59,7 +59,7 @@ export class ClientService {
         user: {
           id: client.user.id,
           email: client.user.email.toString(),
-          ativo: client.user.ativo,
+          active: client.user.active,
         },
         name: client.name,
       }));
@@ -82,7 +82,7 @@ export class ClientService {
           user: {
             id: client.user.id,
             email: client.user.email.toString(),
-            ativo: client.user.ativo,
+            active: client.user.active,
           },
           name: client.name,
         };

@@ -1,5 +1,5 @@
 {
   "email": "usuario@exemplo.com",
-  "hashSenha": "$2b$10$abcdefghijklmnopqrstuvxyz1234567890abcdefghijklmnopqrstuvxyz",
-  "ativo": true
+  "hashPassword": "$2b$10$abcdefghijklmnopqrstuvxyz1234567890abcdefghijklmnopqrstuvxyz",
+  "active": true
 }

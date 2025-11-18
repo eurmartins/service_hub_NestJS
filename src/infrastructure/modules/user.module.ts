@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../../domain/entities/user.entity';
 import { UserService } from '../../application/services/user/user.service';
@@ -7,9 +7,10 @@ import { UserController } from '../controllers/user.controller';
 import { AppLoggerService } from '../../application/services/logger/logger.service';
 import { USER_REPOSITORY } from '../../domain/repositories/user.repository';
 import { UserRepositoryImpl } from '../repositories/user.repository.impl';
+import { AuthModule } from './auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User]), forwardRef(() => AuthModule)],
   providers: [
     UserService,
     HashService,
@@ -20,5 +21,12 @@ import { UserRepositoryImpl } from '../repositories/user.repository.impl';
     },
   ],
   controllers: [UserController],
+  exports: [
+    {
+      provide: USER_REPOSITORY,
+      useClass: UserRepositoryImpl,
+    },
+    HashService,
+  ],
 })
 export class UserModule {}

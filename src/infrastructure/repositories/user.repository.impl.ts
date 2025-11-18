@@ -25,7 +25,10 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOneBy({ email });
+    return this.userRepository
+      .createQueryBuilder('user')
+      .where('user._email = :email', { email })
+      .getOne();
   }
 
   async update(user: User): Promise<User> {

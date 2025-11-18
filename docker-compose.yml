@@ -8,3 +8,4 @@ services:
     environment:
       PORT: 3000
       URL_DB: mysql://root:root@host.docker.internal:3306/service_hub
+      JWT_SECRET: secretkey123

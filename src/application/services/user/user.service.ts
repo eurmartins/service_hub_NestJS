@@ -9,7 +9,12 @@ import { Email } from '../../../domain/values-objects/user.values-objects/email.
 import { HashPassword } from '../../../domain/values-objects/user.values-objects/hashpassword.values-objects';
 import type { UserRepository } from '../../../domain/repositories/user.repository';
 import { USER_REPOSITORY } from '../../../domain/repositories/user.repository';
-
+import {
+  NotFoundUserByIdException,
+  UserDeletionFailedException,
+  UserCreationFailedException,
+  UserUpdateFailedException,
+} from '../../exceptions/user/user.exception';
 @Injectable()
 export class UserService {
   constructor(
@@ -38,8 +43,11 @@ export class UserService {
     } catch (error) {
       this.logger.error(
         `Error creating user with email: ${createUserDto.email}`,
+        error,
       );
-      throw error;
+      throw new UserCreationFailedException(
+        `Failed to create user with email: ${createUserDto.email}`,
+      );
     }
   }
 
@@ -68,20 +76,24 @@ export class UserService {
 
       const user = await this.userRepository.findById(id);
 
-      if (user) {
-        this.logger.info(`User found: ${user.email.toString()}`);
-        return {
-          id: user.id,
-          email: user.email.toString(),
-          active: user.active,
-        };
-      } else {
-        this.logger.error(`User with ID ${id} not found`);
-        return null;
+      if (!user) {
+        throw new NotFoundUserByIdException(`User with ID ${id} not found`);
       }
+
+      return {
+        id: user.id,
+        email: user.email.toString(),
+        active: user.active,
+      };
     } catch (error) {
-      this.logger.error(`Error fetching user with ID ${id}. Error: ${error}`);
-      throw error;
+      if (error instanceof NotFoundUserByIdException) {
+        throw error;
+      }
+      this.logger.error(
+        `Error fetching user with ID ${id}. Error: ${error}`,
+        error,
+      );
+      throw new NotFoundUserByIdException(`Error fetching user with ID ${id}`);
     }
   }
 
@@ -91,7 +103,11 @@ export class UserService {
 
       const user = await this.userRepository.findById(id);
 
-      if (!user) return null;
+      if (!user) {
+        throw new NotFoundUserByIdException(
+          `User with ID ${id} not found for update`,
+        );
+      }
 
       if (updateUserDto.email) {
         user.email = new Email(updateUserDto.email);
@@ -108,21 +124,42 @@ export class UserService {
 
       return updatedUser;
     } catch (error) {
-      this.logger.error(`Error updating user with ID ${id}. Error: ${error}`);
-      throw error;
+      if (error instanceof NotFoundUserByIdException) {
+        throw error;
+      }
+      this.logger.error(
+        `Error updating user with ID ${id}. Error: ${error}`,
+        error,
+      );
+      throw new UserUpdateFailedException(
+        `Failed to update user with ID ${id}`,
+      );
     }
   }
 
   async remove(id: string): Promise<void> {
     try {
       this.logger.info(`Deleting user with ID: ${id}`);
-
+      const user = await this.userRepository.findById(id);
+      if (!user) {
+        throw new NotFoundUserByIdException(
+          `User with ID ${id} not found for deletion`,
+        );
+      }
       await this.userRepository.delete(id);
 
       this.logger.info(`User deleted`);
     } catch (error) {
-      this.logger.error(`Error deleting user with ID ${id}. Error: ${error}`);
-      throw error;
+      if (error instanceof NotFoundUserByIdException) {
+        throw error;
+      }
+      this.logger.error(
+        `Error deleting user with ID ${id}. Error: ${error}`,
+        error,
+      );
+      throw new UserDeletionFailedException(
+        `Failed to delete user with ID ${id}`,
+      );
     }
   }
 }

@@ -8,7 +8,12 @@ import type { ClientRepository } from '../../../domain/repositories/client.repos
 import { CLIENT_REPOSITORY } from '../../../domain/repositories/client.repository';
 import type { UserRepository } from '../../../domain/repositories/user.repository';
 import { USER_REPOSITORY } from '../../../domain/repositories/user.repository';
-
+import {
+  NotFoundClientByIdException,
+  ClientCreationFailedException,
+  ClientUpdateFailedException,
+  ClientDeletionFailedException,
+} from '../../exceptions/client/client.exception';
 @Injectable()
 export class ClientService {
   constructor(
@@ -27,7 +32,9 @@ export class ClientService {
 
       const user = await this.userRepository.findById(createClientDto.id);
       if (!user) {
-        throw new Error(`User with ID ${createClientDto.id} not found`);
+        throw new NotFoundClientByIdException(
+          `User with ID ${createClientDto.id} not found for client creation`,
+        );
       }
 
       const client = new Client();
@@ -41,8 +48,16 @@ export class ClientService {
 
       return savedClient;
     } catch (error) {
-      this.logger.error(`Error creating client with ID: ${createClientDto.id}`);
-      throw error;
+      if (error instanceof NotFoundClientByIdException) {
+        throw error;
+      }
+      this.logger.error(
+        `Error creating client with ID: ${createClientDto.id}`,
+        error,
+      );
+      throw new ClientCreationFailedException(
+        `Failed to create client with ID: ${createClientDto.id}`,
+      );
     }
   }
 
@@ -74,6 +89,9 @@ export class ClientService {
       this.logger.info(`Fetching client with ID: ${id}`);
 
       const client = await this.clientRepository.findById(id);
+      if (!client) {
+        throw new NotFoundClientByIdException(`Client with ID ${id} not found`);
+      }
 
       if (client) {
         this.logger.info(`Client found: ${client.name}`);
@@ -91,8 +109,16 @@ export class ClientService {
         return null;
       }
     } catch (error) {
-      this.logger.error(`Error fetching client with ID ${id}. Error: ${error}`);
-      throw error;
+      if (error instanceof NotFoundClientByIdException) {
+        throw error;
+      }
+      this.logger.error(
+        `Error fetching client with ID ${id}. Error: ${error}`,
+        error,
+      );
+      throw new NotFoundClientByIdException(
+        `Error fetching client with ID ${id}`,
+      );
     }
   }
 
@@ -105,7 +131,11 @@ export class ClientService {
 
       const client = await this.clientRepository.findById(id);
 
-      if (!client) return null;
+      if (!client) {
+        throw new NotFoundClientByIdException(
+          `Client with ID ${id} not found for update`,
+        );
+      }
 
       const updatedData: Partial<Client> = {};
 
@@ -119,8 +149,16 @@ export class ClientService {
 
       return updatedClient;
     } catch (error) {
-      this.logger.error(`Error updating client with ID ${id}. Error: ${error}`);
-      throw error;
+      if (error instanceof NotFoundClientByIdException) {
+        throw error;
+      }
+      this.logger.error(
+        `Error updating client with ID ${id}. Error: ${error}`,
+        error,
+      );
+      throw new ClientUpdateFailedException(
+        `Failed to update client with ID ${id}`,
+      );
     }
   }
 
@@ -128,12 +166,26 @@ export class ClientService {
     try {
       this.logger.info(`Deleting client with ID: ${id}`);
 
+      const client = await this.clientRepository.findById(id);
+      if (!client) {
+        throw new NotFoundClientByIdException(
+          `Client with ID ${id} not found for deletion`,
+        );
+      }
       await this.clientRepository.delete(id);
 
       this.logger.info(`Client deleted`);
     } catch (error) {
-      this.logger.error(`Error deleting client with ID ${id}. Error: ${error}`);
-      throw error;
+      if (error instanceof NotFoundClientByIdException) {
+        throw error;
+      }
+      this.logger.error(
+        `Error deleting client with ID ${id}. Error: ${error}`,
+        error,
+      );
+      throw new ClientDeletionFailedException(
+        `Failed to delete client with ID ${id}`,
+      );
     }
   }
 }

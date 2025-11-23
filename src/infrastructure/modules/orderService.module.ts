@@ -14,9 +14,7 @@ import { ORDER_REPOSITORY } from 'src/domain/repositories/order.repository';
 import { OrderRepositoryImpl } from '../repositories/order.repository.impl';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([OrderService, Provider, Order]),
-  ],
+  imports: [TypeOrmModule.forFeature([OrderService, Provider, Order])],
   providers: [
     AppLoggerService,
     OrderServiceService,

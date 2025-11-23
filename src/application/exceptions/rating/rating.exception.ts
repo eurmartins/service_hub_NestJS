@@ -1,0 +1,11 @@
+export { NotFoundRatingByIdException } from './notFoundRatingById.exception';
+export { RatingCreationFailedException } from './ratingCreationFailed.exception';
+export { RatingUpdateFailedException } from './ratingUpdateFailed.exception';
+export { RatingDeletionFailedException } from './ratingDeletionFailed.exception';
+export { OrderNotFoundForRatingException } from './orderNotFoundForRating.exception';
+export { OrderNotCompletedException } from './orderNotCompleted.exception';
+export { ClientNotAuthorizedToRateException } from './clientNotAuthorizedToRate.exception';
+export { OrderAlreadyRatedException } from './orderAlreadyRated.exception';
+export { OrderCompletionDateNotFoundException } from './orderCompletionDateNotFound.exception';
+export { RatingPeriodExpiredException } from './ratingPeriodExpired.exception';
+export { ProviderIdMismatchException } from './providerIdMismatch.exception';

@@ -1,4 +1,4 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { Rating } from '../../../domain/entities/rating.entity';
 import { CreateRatingDto } from '../../dtos/rating/create-rating.dto';
 import { ReadRatingDto } from '../../dtos/rating/read-rating.dto';
@@ -11,6 +11,19 @@ import { ORDER_REPOSITORY } from '../../../domain/repositories/order.repository'
 import { Score } from '../../../domain/values-objects/rating.values-objects/score';
 import { Comment } from '../../../domain/values-objects/rating.values-objects/comment';
 import { OrderStatusEnum } from '../../../domain/entities/enums/status.enum';
+import {
+  NotFoundRatingByIdException,
+  RatingCreationFailedException,
+  RatingUpdateFailedException,
+  RatingDeletionFailedException,
+  OrderNotFoundForRatingException,
+  OrderNotCompletedException,
+  ClientNotAuthorizedToRateException,
+  OrderAlreadyRatedException,
+  OrderCompletionDateNotFoundException,
+  RatingPeriodExpiredException,
+  ProviderIdMismatchException,
+} from '../../exceptions/rating/rating.exception';
 
 @Injectable()
 export class RatingService {
@@ -34,7 +47,7 @@ export class RatingService {
       );
 
       if (!order) {
-        throw new BadRequestException('Order not found');
+        throw new OrderNotFoundForRatingException('Order not found');
       }
 
       this.logger.debug(
@@ -48,15 +61,11 @@ export class RatingService {
       );
 
       if (order.status !== OrderStatusEnum.COMPLETED) {
-        throw new BadRequestException(
-          'Rating can only be created for COMPLETED orders',
-        );
+        throw new OrderNotCompletedException();
       }
 
       if (order.clientId !== createRatingDto.clientId) {
-        throw new BadRequestException(
-          'Only the client who made the order can rate it',
-        );
+        throw new ClientNotAuthorizedToRateException();
       }
 
       const existingRating = await this.ratingRepository.findByOrderId(
@@ -64,23 +73,19 @@ export class RatingService {
       );
 
       if (existingRating) {
-        throw new BadRequestException('This order has already been rated');
+        throw new OrderAlreadyRatedException();
       }
 
       if (!order.completedAt) {
-        throw new BadRequestException('Order completion date not found');
+        throw new OrderCompletionDateNotFoundException();
       }
 
       if (!Rating.canRateOrder(order.completedAt)) {
-        throw new BadRequestException(
-          'Rating period expired. Orders can only be rated within 30 days of completion',
-        );
+        throw new RatingPeriodExpiredException();
       }
 
       if (order.providerId !== createRatingDto.providerId) {
-        throw new BadRequestException(
-          'Provider ID does not match the order provider',
-        );
+        throw new ProviderIdMismatchException();
       }
 
       const rating = new Rating();
@@ -105,7 +110,7 @@ export class RatingService {
         'Error creating rating',
         error instanceof Error ? error.message : String(error),
       );
-      throw error;
+      throw new RatingCreationFailedException('Failed to create rating');
     }
   }
 
@@ -133,13 +138,12 @@ export class RatingService {
 
       const rating = await this.ratingRepository.findById(id);
 
-      if (rating) {
-        this.logger.info(`Rating found: ${rating.id}`);
-        return this.mapToReadDto(rating);
-      } else {
-        this.logger.error(`Rating with ID ${id} not found`);
-        return null;
+      if (!rating) {
+        throw new NotFoundRatingByIdException(`Rating with ID ${id} not found`);
       }
+
+      this.logger.info(`Rating found: ${rating.id}`);
+      return this.mapToReadDto(rating);
     } catch (error) {
       this.logger.error(
         `Error fetching rating with ID ${id}`,
@@ -218,7 +222,7 @@ export class RatingService {
       const rating = await this.ratingRepository.findById(id);
 
       if (!rating) {
-        throw new BadRequestException('Rating not found');
+        throw new NotFoundRatingByIdException('Rating not found');
       }
 
       if (updateRatingDto.score !== undefined) {
@@ -239,11 +243,16 @@ export class RatingService {
 
       return updatedRating;
     } catch (error) {
+      if (error instanceof NotFoundRatingByIdException) {
+        throw error;
+      }
       this.logger.error(
         `Error updating rating with ID ${id}`,
         error instanceof Error ? error.message : String(error),
       );
-      throw error;
+      throw new RatingUpdateFailedException(
+        `Failed to update rating with ID ${id}`,
+      );
     }
   }
 
@@ -254,18 +263,23 @@ export class RatingService {
       const rating = await this.ratingRepository.findById(id);
 
       if (!rating) {
-        throw new BadRequestException('Rating not found');
+        throw new NotFoundRatingByIdException('Rating not found');
       }
 
       await this.ratingRepository.delete(id);
 
       this.logger.info('Rating deleted');
     } catch (error) {
+      if (error instanceof NotFoundRatingByIdException) {
+        throw error;
+      }
       this.logger.error(
         `Error deleting rating with ID ${id}`,
         error instanceof Error ? error.message : String(error),
       );
-      throw error;
+      throw new RatingDeletionFailedException(
+        `Failed to delete rating with ID ${id}`,
+      );
     }
   }
 

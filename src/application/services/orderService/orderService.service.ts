@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { OrderService } from 'src/domain/entities/orderService.entity';
 import { AppLoggerService } from '../logger/logger.service';
 import { CreateOrderServiceDto } from '../../dtos/orderService/create-orderService.dto';
@@ -14,6 +14,13 @@ import { PROVIDER_REPOSITORY } from 'src/domain/repositories/provider.repository
 import type { OrderRepository } from 'src/domain/repositories/order.repository';
 import { ORDER_REPOSITORY } from 'src/domain/repositories/order.repository';
 import { StatusEnum } from 'src/domain/entities/enums/status.enum';
+import {
+  NotFoundOrderServiceByIdException,
+  OrderServiceCreationFailedException,
+  OrderServiceUpdateFailedException,
+  OrderServiceDeletionFailedException,
+  ProviderNotFoundForOrderServiceException,
+} from '../../exceptions/orderService/orderService.exception';
 
 @Injectable()
 export class OrderServiceService {
@@ -42,7 +49,7 @@ export class OrderServiceService {
       );
 
       if (!provider) {
-        throw new BadRequestException('Provider not found');
+        throw new ProviderNotFoundForOrderServiceException();
       }
 
       const orderService = new OrderService();
@@ -68,8 +75,11 @@ export class OrderServiceService {
     } catch (error) {
       this.logger.error(
         `Error creating order service with title: ${createOrderServiceDto.title}`,
+        error instanceof Error ? error.message : String(error),
       );
-      throw error;
+      throw new OrderServiceCreationFailedException(
+        `Failed to create order service with title: ${createOrderServiceDto.title}`,
+      );
     }
   }
 
@@ -114,8 +124,9 @@ export class OrderServiceService {
       const orderService = await this.orderServiceRepository.findById(id);
 
       if (!orderService) {
-        this.logger.error(`Order service not found with ID: ${id}`);
-        return null;
+        throw new NotFoundOrderServiceByIdException(
+          `OrderService with ID ${id} not found`,
+        );
       }
 
       this.logger.info(`Order service found: ${orderService.title.toString()}`);
@@ -149,14 +160,16 @@ export class OrderServiceService {
   async update(
     id: string,
     updateOrderServiceDto: UpdateOrderServiceDto,
-  ): Promise<OrderService | null> {
+  ): Promise<OrderService> {
     try {
       this.logger.info(`Updating order service with ID: ${id}`);
 
       const orderService = await this.orderServiceRepository.findById(id);
 
       if (!orderService) {
-        return null;
+        throw new NotFoundOrderServiceByIdException(
+          `OrderService with ID ${id} not found for update`,
+        );
       }
 
       if (updateOrderServiceDto.title) {
@@ -179,7 +192,7 @@ export class OrderServiceService {
         );
 
         if (!provider) {
-          throw new BadRequestException('Provider not found');
+          throw new ProviderNotFoundForOrderServiceException();
         }
 
         orderService.providerId = updateOrderServiceDto.providerId;
@@ -200,16 +213,28 @@ export class OrderServiceService {
 
       return updatedOrderService;
     } catch (error) {
+      if (error instanceof NotFoundOrderServiceByIdException) {
+        throw error;
+      }
       this.logger.error(
         `Error updating order service with ID ${id}. Error: ${error}`,
       );
-      throw error;
+      throw new OrderServiceUpdateFailedException(
+        `Failed to update order service with ID ${id}`,
+      );
     }
   }
 
   async remove(id: string): Promise<void> {
     try {
       this.logger.info(`Attempting to delete order service with ID: ${id}`);
+
+      const orderService = await this.orderServiceRepository.findById(id);
+      if (!orderService) {
+        throw new NotFoundOrderServiceByIdException(
+          `OrderService with ID ${id} not found for deletion`,
+        );
+      }
 
       const linkedOrders = await this.orderRepository.findByServiceId(id);
 
@@ -229,10 +254,15 @@ export class OrderServiceService {
         this.logger.info(`Order service physically deleted: ${id}`);
       }
     } catch (error) {
+      if (error instanceof NotFoundOrderServiceByIdException) {
+        throw error;
+      }
       this.logger.error(
         `Error removing order service with ID ${id}. Error: ${error}`,
       );
-      throw error;
+      throw new OrderServiceDeletionFailedException(
+        `Failed to delete order service with ID ${id}`,
+      );
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, Inject } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { Provider } from '../../../domain/entities/provider.entity';
 import { CreateProviderDto } from '../../dtos/provider/create-provider.dto';
 import { UpdateProviderDto } from '../../dtos/provider/update-provider.dto';
@@ -9,6 +9,12 @@ import type { ProviderRepository } from '../../../domain/repositories/provider.r
 import { PROVIDER_REPOSITORY } from '../../../domain/repositories/provider.repository';
 import type { UserRepository } from '../../../domain/repositories/user.repository';
 import { USER_REPOSITORY } from '../../../domain/repositories/user.repository';
+import {
+  NotFoundProviderByIdException,
+  ProviderCreationFailedException,
+  ProviderUpdateFailedException,
+  ProviderDeletionFailedException,
+} from '../../exceptions/provider/provider.exception';
 
 @Injectable()
 export class ProviderService {
@@ -28,7 +34,7 @@ export class ProviderService {
 
       const user = await this.userRepository.findById(createProviderDto.id);
       if (!user) {
-        throw new BadRequestException('User not found');
+        throw new NotFoundProviderByIdException('User not found');
       }
 
       const provider = new Provider();
@@ -47,8 +53,11 @@ export class ProviderService {
     } catch (error) {
       this.logger.error(
         `Error creating provider with name: ${createProviderDto.name}`,
+        error,
       );
-      throw error;
+      throw new ProviderCreationFailedException(
+        `Failed to create provider with name: ${createProviderDto.name}`,
+      );
     }
   }
 
@@ -83,22 +92,23 @@ export class ProviderService {
 
       const provider = await this.providerRepository.findById(id);
 
-      if (provider) {
-        this.logger.info(`Provider found: ${provider.name}`);
-        return {
-          id: provider.id,
-          user: {
-            id: provider.user.id,
-            email: provider.user.email.toString(),
-            active: provider.user.active,
-          },
-          name: provider.name,
-          prof_description: provider.prof_description.value,
-        };
-      } else {
-        this.logger.error(`Provider with ID ${id} not found`);
-        return null;
+      if (!provider) {
+        throw new NotFoundProviderByIdException(
+          `Provider with ID ${id} not found`,
+        );
       }
+
+      this.logger.info(`Provider found: ${provider.name}`);
+      return {
+        id: provider.id,
+        user: {
+          id: provider.user.id,
+          email: provider.user.email.toString(),
+          active: provider.user.active,
+        },
+        name: provider.name,
+        prof_description: provider.prof_description.value,
+      };
     } catch (error) {
       this.logger.error(`Error fetching provider with ID ${id}. 
         Error: ${error}`);
@@ -109,13 +119,17 @@ export class ProviderService {
   async update(
     id: string,
     updateProviderDto: UpdateProviderDto,
-  ): Promise<Provider | null> {
+  ): Promise<Provider> {
     try {
       this.logger.info(`Updating provider with ID: ${id}`);
 
       const provider = await this.providerRepository.findById(id);
 
-      if (!provider) return null;
+      if (!provider) {
+        throw new NotFoundProviderByIdException(
+          `Provider with ID ${id} not found for update`,
+        );
+      }
 
       if (updateProviderDto.name) {
         provider.name = updateProviderDto.name;
@@ -136,9 +150,14 @@ export class ProviderService {
 
       return updatedProvider;
     } catch (error) {
+      if (error instanceof NotFoundProviderByIdException) {
+        throw error;
+      }
       this.logger.error(`Error updating provider with ID ${id}. 
         Error: ${error}`);
-      throw error;
+      throw new ProviderUpdateFailedException(
+        `Failed to update provider with ID ${id}`,
+      );
     }
   }
 
@@ -146,13 +165,25 @@ export class ProviderService {
     try {
       this.logger.info(`Deleting provider with ID: ${id}`);
 
+      const provider = await this.providerRepository.findById(id);
+      if (!provider) {
+        throw new NotFoundProviderByIdException(
+          `Provider with ID ${id} not found for deletion`,
+        );
+      }
+
       await this.providerRepository.delete(id);
 
       this.logger.info(`Provider deleted`);
     } catch (error) {
+      if (error instanceof NotFoundProviderByIdException) {
+        throw error;
+      }
       this.logger.error(`Error deleting provider with ID ${id}. 
         Error: ${error}`);
-      throw error;
+      throw new ProviderDeletionFailedException(
+        `Failed to delete provider with ID ${id}`,
+      );
     }
   }
 }

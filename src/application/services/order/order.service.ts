@@ -1,4 +1,4 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { Order } from '../../../domain/entities/order.entity';
 import { CreateOrderDto } from '../../dtos/order/create-order.dto';
 import { ReadOrderDto } from '../../dtos/order/read-order.dto';
@@ -12,6 +12,14 @@ import {
   OrderStatusEnum,
 } from '../../../domain/entities/enums/status.enum';
 import { ChargedAmount } from '../../../domain/values-objects/order.values-objects/chargedAmount.values-objects';
+import {
+  NotFoundOrderByIdException,
+  OrderCreationFailedException,
+  OrderUpdateFailedException,
+  OrderDeletionFailedException,
+  ServiceNotFoundForOrderException,
+  ServiceNotActiveException,
+} from '../../exceptions/order/order.exception';
 
 @Injectable()
 export class OrderService {
@@ -34,13 +42,11 @@ export class OrderService {
       );
 
       if (!orderService) {
-        throw new BadRequestException('Service not found');
+        throw new ServiceNotFoundForOrderException();
       }
 
       if (orderService.status !== StatusEnum.ACTIVE) {
-        throw new BadRequestException(
-          'Service must be ACTIVE to be contracted',
-        );
+        throw new ServiceNotActiveException();
       }
 
       const order = new Order();
@@ -54,8 +60,11 @@ export class OrderService {
 
       return savedOrder;
     } catch (error) {
-      this.logger.error('Error creating order');
-      throw error;
+      this.logger.error(
+        'Error creating order',
+        error instanceof Error ? error.message : String(error),
+      );
+      throw new OrderCreationFailedException('Failed to create order');
     }
   }
 
@@ -80,13 +89,12 @@ export class OrderService {
 
       const order = await this.orderRepository.findById(id);
 
-      if (order) {
-        this.logger.info(`Order found: ${order.id}`);
-        return this.mapToReadDto(order);
-      } else {
-        this.logger.error(`Order with ID ${id} not found`);
-        return null;
+      if (!order) {
+        throw new NotFoundOrderByIdException(`Order with ID ${id} not found`);
       }
+
+      this.logger.info(`Order found: ${order.id}`);
+      return this.mapToReadDto(order);
     } catch (error) {
       this.logger.error(`Error fetching order with ID ${id}`);
       throw error;
@@ -97,12 +105,24 @@ export class OrderService {
     try {
       this.logger.info(`Deleting order with ID: ${id}`);
 
+      const order = await this.orderRepository.findById(id);
+      if (!order) {
+        throw new NotFoundOrderByIdException(
+          `Order with ID ${id} not found for deletion`,
+        );
+      }
+
       await this.orderRepository.delete(id);
 
       this.logger.info('Order deleted');
     } catch (error) {
+      if (error instanceof NotFoundOrderByIdException) {
+        throw error;
+      }
       this.logger.error(`Error deleting order with ID ${id}`);
-      throw error;
+      throw new OrderDeletionFailedException(
+        `Failed to delete order with ID ${id}`,
+      );
     }
   }
 
@@ -115,7 +135,7 @@ export class OrderService {
       const order = await this.orderRepository.findById(id);
 
       if (!order) {
-        throw new BadRequestException('Order not found');
+        throw new NotFoundOrderByIdException('Order not found');
       }
 
       order.updateStatus(newStatus);
@@ -126,8 +146,13 @@ export class OrderService {
 
       return updatedOrder;
     } catch (error) {
+      if (error instanceof NotFoundOrderByIdException) {
+        throw error;
+      }
       this.logger.error(`Error updating status of order with ID ${id}`);
-      throw error;
+      throw new OrderUpdateFailedException(
+        `Failed to update status of order with ID ${id}`,
+      );
     }
   }
 
